@@ -1,0 +1,23 @@
+#!/usr/bin/env hush
+
+let namecheap_info = [
+  @[ hostname: "@", domain: "foo.com", passwd_file: "/home/foo/.config/passwd.foo.com.txt" ],
+  @[ hostname: "www", domain: "foo.com", passwd_file: "/home/foo/.config/passwd.foo.com.txt" ],
+  @[ hostname: "@", domain: "bar.com", passwd_file: "/home/foo/.config/passwd.bar.com.txt" ],
+  @[ hostname: "www", domain: "bar.com", passwd_file: "/home/foo/.config/passwd.bar.com.txt" ]
+]
+
+let actual_ip = ${ curl -s ipecho.net/plain | tr -d "\n" }.stdout
+for h in std.iter(namecheap_info) do
+  let hostname = h.hostname
+  let domain = h.domain
+  let passwd_file = h.passwd_file
+  let passwd = ${ cat $passwd_file | tr -d "\n" }.stdout
+  let host_and_domain = if hostname == "@" then domain else hostname ++ "." ++ domain end
+  let domain_ip = ${ host "$host_and_domain" | grep -oE '((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\\.){3}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])' | tr -d "\n" }.stdout
+  if actual_ip != domain_ip then
+    std.print("setting", actual_ip, "for", host_and_domain)
+    let r = ${ curl --silent "https://dynamicdns.park-your-domain.com/update?host=$hostname&domain=$domain&password=$passwd&ip=$actual_ip" }
+    std.print(r)
+  end
+end
