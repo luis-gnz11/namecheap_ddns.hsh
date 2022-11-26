@@ -1,5 +1,5 @@
 # namecheap-ddns.hsh
-Hush shell script to dynamically change domains IPs in namecheap.com. It only updates the namecheap's IPs when when an IP change is detected.
+Hush shell script to dynamically change domains IPs in namecheap.com. It only updates the namecheap's IPs when an IP change is detected.
 
 # Usage
 - Enable Dynamic DNS in namecheap's site to generate a password.
