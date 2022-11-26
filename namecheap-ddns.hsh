@@ -1,4 +1,4 @@
-#!/usr/bin/env hush
+#!/usr/bin/hush
 
 let namecheap_info = [
   @[ hostname: "@", domain: "foo.com", passwd_file: "/home/foo/.config/passwd.foo.com.txt" ],
